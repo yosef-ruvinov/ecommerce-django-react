@@ -14,7 +14,7 @@ provider "aws" {
 }
 
 # Security group for SSH access
-resource "aws_security_group" "tf_sg" {
+resource "aws_security_group" "ec2_sg" {
   name        = "security group using Terraform"
   description = "security group using Terraform"
 
@@ -60,6 +60,7 @@ resource "aws_instance" "jenkins" {
   ami           = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
+  security_groups = [aws_security_group.ec2_sg.name]
 
 
   tags = {
@@ -84,6 +85,7 @@ resource "aws_instance" "my_ubuntu" {
   ami           = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
+  security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
     Name = "My Ubuntu"
@@ -103,6 +105,7 @@ resource "aws_instance" "my_windows" {
   ami           = "ami-07df29cf3e326c3ad" # Windows 10 AMI ID
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
+  security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
     Name = "My Windows"
