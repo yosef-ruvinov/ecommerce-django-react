@@ -17,7 +17,6 @@ provider "aws" {
 resource "aws_security_group" "tf_sg" {
   name        = "security group using Terraform"
   description = "security group using Terraform"
-  vpc_id      = "vpc-0a534c6a223c8fb8f"
 
   ingress {
     from_port        = 8080
@@ -61,6 +60,7 @@ resource "aws_instance" "jenkins" {
   ami           = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
+
 
   tags = {
     Name = "Jenkins"
