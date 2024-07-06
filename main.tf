@@ -17,10 +17,9 @@ provider "aws" {
 resource "aws_security_group" "tf_sg" {
   name        = "security group using Terraform"
   description = "security group using Terraform"
-  vpc_id      = "vpc-084e88412d2a7d37e"
+  vpc_id = "vpc-0a534c6a223c8fb8f"
 
   ingress {
-    description      = "SSH"
     from_port        = 8080
     to_port          = 8080
     protocol         = "tcp"
@@ -29,9 +28,16 @@ resource "aws_security_group" "tf_sg" {
   }  
 
   ingress {
-    description      = "SSH"
     from_port        = 22
     to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+    ingress {
+    from_port        = 3306
+    to_port          = 3306
     protocol         = "tcp"
     cidr_blocks      = ["0.0.0.0/0"]
     ipv6_cidr_blocks = ["::/0"]
@@ -54,8 +60,7 @@ resource "aws_security_group" "tf_sg" {
 resource "aws_instance" "jenkins" {
   ami             = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
   instance_type   = "t3.micro"
-  key_name        = "terraform-keypair"
-  security_groups = ["aws_security_group.tf_sg"]
+  key_name        = "terraform_keyPair"
 
   tags = {
     Name = "Jenkins"
@@ -78,8 +83,7 @@ resource "aws_instance" "jenkins" {
 resource "aws_instance" "my_ubuntu" {
   ami             = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
   instance_type   = "t3.micro"
-  key_name        = "terraform-keypair"
-  security_groups = ["aws_security_group.tf_sg"]
+  key_name        = "terraform_keyPair"
 
   tags = {
     Name = "My Ubuntu"
@@ -98,8 +102,7 @@ resource "aws_instance" "my_ubuntu" {
 resource "aws_instance" "my_windows" {
   ami             = "ami-07df29cf3e326c3ad" # Windows 10 AMI ID
   instance_type   = "t3.micro"
-  key_name        = "terraform-keypair"
-  security_groups = ["aws_security_group.tf_sg"]
+  key_name        = "terraform_keyPair"
 
   tags = {
     Name = "My Windows"
@@ -117,3 +120,4 @@ resource "aws_instance" "my_windows" {
               </powershell>
               EOF
 }
+
