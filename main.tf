@@ -51,7 +51,7 @@ resource "aws_security_group" "ec2_sg" {
   }
 
   tags = {
-    Name = "tf_sg"
+    Name = "ec2_sg"
   }
 }
 
@@ -61,6 +61,7 @@ resource "aws_instance" "jenkins" {
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
+  iam_instance_profile   = aws_iam_instance_profile.terraform-user.name
 
 
   tags = {
@@ -86,6 +87,7 @@ resource "aws_instance" "my_ubuntu" {
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
+  iam_instance_profile   = aws_iam_instance_profile.terraform-user.name
 
   tags = {
     Name = "My Ubuntu"
@@ -106,6 +108,7 @@ resource "aws_instance" "my_windows" {
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
+  iam_instance_profile   = aws_iam_instance_profile.terraform-user.name
 
   tags = {
     Name = "My Windows"
