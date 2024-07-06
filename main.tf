@@ -61,8 +61,6 @@ resource "aws_instance" "jenkins" {
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
-  iam_instance_profile   = aws_iam_instance_profile.terraform-user.name
-
 
   tags = {
     Name = "Jenkins"
@@ -71,7 +69,7 @@ resource "aws_instance" "jenkins" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt update
-              sudo apt install -y openjdk-11-jdk
+              sudo apt install -y openjdk-17-jdk
               sudo apt install -y git
               wget -q -O - https://pkg.jenkins.io/debian-stable/jenkins.io.key | sudo apt-key add -
               sudo sh -c 'echo deb http://pkg.jenkins.io/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
@@ -79,7 +77,7 @@ resource "aws_instance" "jenkins" {
               sudo apt install -y jenkins
               sudo systemctl start jenkins
               EOF
-}
+  }
 
 # My Ubuntu instance - SLave with installed: Ubuntu 22.04, Java, Docker
 resource "aws_instance" "my_ubuntu" {
@@ -87,7 +85,6 @@ resource "aws_instance" "my_ubuntu" {
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
-  iam_instance_profile   = aws_iam_instance_profile.terraform-user.name
 
   tags = {
     Name = "My Ubuntu"
@@ -108,7 +105,6 @@ resource "aws_instance" "my_windows" {
   instance_type = "t3.micro"
   key_name      = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
-  iam_instance_profile   = aws_iam_instance_profile.terraform-user.name
 
   tags = {
     Name = "My Windows"
