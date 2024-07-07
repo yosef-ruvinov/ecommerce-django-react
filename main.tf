@@ -125,3 +125,4 @@ resource "aws_instance" "my_windows" {
               </powershell>
               EOF
   }
+
