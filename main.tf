@@ -63,7 +63,6 @@ resource "aws_instance" "jenkins" {
   key_name      = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
 
-
   tags = {
     Name = "Jenkins"
   }
@@ -126,3 +125,4 @@ resource "aws_instance" "my_windows" {
               </powershell>
               EOF
   }
+
