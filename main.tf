@@ -7,13 +7,11 @@ terraform {
   }
 }
 
-# The cloud provider
 provider "aws" {
   region  = "il-central-1"
   profile = "terraform-user"
 }
 
-# Security group for SSH access
 resource "aws_security_group" "ec2_sg" {
   name        = "security group using Terraform"
   description = "security group using Terraform"
@@ -55,8 +53,6 @@ resource "aws_security_group" "ec2_sg" {
   }
 }
 
-
-# Jenkins instance - Master with installed: Ubuntu 22.04, Jenkins, Java, GIT
 resource "aws_instance" "jenkins" {
   ami           = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
   instance_type = "t3.micro"
@@ -67,21 +63,21 @@ resource "aws_instance" "jenkins" {
     Name = "Jenkins"
   }
 
- user_data = <<-EOF
-              #!/bin/bash
-              sudo apt-get update
-              sudo apt-get install -y openjdk-17-jdk
-              sudo apt-get install -y git
-              curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
-              echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
-              sudo apt-get update
-              sudo apt-get install -y jenkins
-              sudo systemctl start jenkins
-              sudo systemctl enable jenkins
-              EOF
-}
+  user_data = <<-EOF
+                #!/bin/bash
+                sudo apt-get update
+                sudo apt-get install -y openjdk-17-jdk git
+                curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+                echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
+                sudo apt-get update
+                sudo apt-get install -y jenkins
+                sudo systemctl start jenkins
+                sudo systemctl enable jenkins
+                sleep 30
+                sudo chmod +r /var/lib/jenkins/secrets/initialAdminPassword
+                EOF
+  }
 
-# My Ubuntu instance - SLave with installed: Ubuntu 22.04, Java, Docker
 resource "aws_instance" "my_ubuntu" {
   ami           = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
   instance_type = "t3.micro"
@@ -102,7 +98,6 @@ resource "aws_instance" "my_ubuntu" {
               EOF
 }
 
-# My Windows instance - Slave with installed: Win10, Docker, Java
 resource "aws_instance" "my_windows" {
   ami           = "ami-07df29cf3e326c3ad" # Windows 10 AMI ID
   instance_type = "t3.micro"
@@ -124,5 +119,4 @@ resource "aws_instance" "my_windows" {
               setx /M PATH "%PATH%;C:\\Java\\jdk-17\\bin"
               </powershell>
               EOF
-  }
-
+}
