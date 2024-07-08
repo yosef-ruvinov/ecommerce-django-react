@@ -71,7 +71,7 @@ resource "aws_instance" "jenkins" {
                 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
                 sudo apt-get update
                 sudo apt-get install -y jenkins
-                sudo systemctl start jenkinss
+                sudo systemctl start jenkins
                 sudo systemctl enable jenkins
                 sleep 30
                 sudo chmod +r /var/lib/jenkins/secrets/initialAdminPassword
