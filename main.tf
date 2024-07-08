@@ -71,8 +71,10 @@ resource "aws_instance" "jenkins" {
                 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
                 sudo apt-get update
                 sudo apt-get install -y jenkins
-                sudo apt-get install -y docker.io
-                sudo usermod -aG docker jenkins
+                sudo snap install -y docker
+                sudo usermod -aG docker jenkins  # Add Jenkins user to Docker group
+                sudo systemctl start docker       # Start Docker service
+                sudo systemctl enable docker
                 sudo systemctl start jenkins
                 sudo systemctl enable jenkins
                 sleep 30
