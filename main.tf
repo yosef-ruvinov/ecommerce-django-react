@@ -54,9 +54,9 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_instance" "jenkins" {
-  ami           = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
-  instance_type = "t3.micro"
-  key_name      = "terraform_keyPair"
+  ami             = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
+  instance_type   = "t3.micro"
+  key_name        = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
@@ -71,17 +71,17 @@ resource "aws_instance" "jenkins" {
                 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
                 sudo apt-get update
                 sudo apt-get install -y jenkins
-                sudo systemctl start jenkins
+                sudo systemctl start jenkinss
                 sudo systemctl enable jenkins
                 sleep 30
                 sudo chmod +r /var/lib/jenkins/secrets/initialAdminPassword
                 EOF
-  }
+}
 
 resource "aws_instance" "my_ubuntu" {
-  ami           = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
-  instance_type = "t3.micro"
-  key_name      = "terraform_keyPair"
+  ami             = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
+  instance_type   = "t3.micro"
+  key_name        = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
@@ -99,9 +99,9 @@ resource "aws_instance" "my_ubuntu" {
 }
 
 resource "aws_instance" "my_windows" {
-  ami           = "ami-07df29cf3e326c3ad" # Windows 10 AMI ID
-  instance_type = "t3.micro"
-  key_name      = "terraform_keyPair"
+  ami             = "ami-07df29cf3e326c3ad" # Windows 10 AMI ID
+  instance_type   = "t3.micro"
+  key_name        = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
