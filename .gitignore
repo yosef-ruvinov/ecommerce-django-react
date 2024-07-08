@@ -1,2 +1,3 @@
 /**/env
-/ecommerce-django-react
+terraform.tfstate
+terraform.tfstate.backup
