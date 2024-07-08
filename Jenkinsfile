@@ -1,43 +1,55 @@
 pipeline {
     agent any
+    environment{
+        DOCKER_USERNAME = yossiruvinovdocker
+        DOCKER_HUB_CREDENTIAL = 
+        GIT_REPO = "https://github.com/yosef-ruvinov/ecommerce-django-react.git"
+        SLACK_CHANNEL = "https://devops-ecommerece.slack.com/archives/C07A7HP27BQ"
+        AWS_CREDENTIALS = 
+    }
 
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/yosef-ruvinov/ecommerce-django-react.git', branch: 'main'
+                git url: "${GIT_REPO}", branch: 'main'
             }
         }
         }
 
         stage('Build') {
             steps {
-                // Build Docker image
-                sh 'docker build -t your-docker-image:tag .' // Replace 'your-docker-image:tag' with your Docker image name and tag
+                sh 'docker build -t yossiruvinovdocker/ecommerce-project:"${BUILD_NUM}" .'
             }
         }
 
-        stage('Test') {
-            steps {
-                script {
-                    def testResult = sh returnStatus: true, script: 'your test commands here' // Replace 'your test commands here' with your actual test commands
-                    if (testResult == 0) {
-                        currentBuild.result = 'SUCCESS'
-                    } else {
-                        currentBuild.result = 'FAILURE'
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             def testResult = sh returnStatus: true, script: 'your test commands here' // Replace 'your test commands here' with your actual test commands
+        //             if (testResult == 0) {
+        //                 currentBuild.result = 'SUCCESS'
+        //             } else {
+        //                 currentBuild.result = 'FAILURE'
+        //             }
+        //         }
+            // }
+            post {
+                    failure {
+                        slackSend (
+                            channel: env.SLACK_CHANNEL,
+                            color: 'danger',
+                            message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+                        )
+                    }
+                    success {
+                        slackSend (
+                            channel: env.SLACK_CHANNEL,
+                            color: 'good',
+                            message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+                        )
                     }
                 }
             }
-            post {
-                success {
-                    echo 'Tests passed! Proceeding with deployment.'
-                }
-                failure {
-                    echo 'Tests failed! Triggering Slack notification and aborting pipeline.'
-                    // Add Slack notification step here
-                    error 'Tests failed! Aborting pipeline.'
-                }
-            }
-        }
 
         stage('Push') {
             steps {
@@ -54,5 +66,3 @@ pipeline {
                 sh 'docker stack deploy -c docker-compose.yml your-app-stack' // Replace 'docker-compose.yml' and 'your-app-stack' with your deployment details
             }
         }
-    }
-}
