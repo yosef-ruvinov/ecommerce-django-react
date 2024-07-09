@@ -11,20 +11,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: "${GIT_REPO}", branch: 'main'  // Checkout your Git repository
+                git url: "${GIT_REPO}", branch: 'main'  // Checkout your git repo
             }
         }
 
         stage('Build') {
             steps {
-                sh 'docker build -t yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER} .'  // Build the Docker image
+                sh 'docker build -t yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER} .'  // Build the docker image
             }
         }
 
         stage('Test') {
             steps {
                 script {
-                    def testResult = sh returnStatus: true, script: 'your test commands here'  // Replace with your actual test commands
+                    def testResult = sh returnStatus: true, script: 'your test commands here'  // *** Replace with your actual test commands
                     if (testResult == 0) {
                         currentBuild.result = 'SUCCESS'
                     } else {
