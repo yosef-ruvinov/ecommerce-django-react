@@ -8,8 +8,8 @@ terraform {
 }
 
 provider "aws" {
-  region  = "il-central-1"
-  profile = "terraform-user"
+  region  = "il-central-1" # Fill in your AWS region (e.g., "us-east-1")
+  profile = "terraform-user"  # Fill in your AWS profile name configured in ~/.aws/credentials
 }
 
 resource "aws_security_group" "ec2_sg" {
@@ -20,7 +20,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port        = 8080
     to_port          = 8080
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = ["0.0.0.0/0"]  
     ipv6_cidr_blocks = ["::/0"]
   }
 
@@ -28,7 +28,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port        = 22
     to_port          = 22
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = ["0.0.0.0/0"] 
     ipv6_cidr_blocks = ["::/0"]
   }
 
@@ -36,7 +36,7 @@ resource "aws_security_group" "ec2_sg" {
     from_port        = 3306
     to_port          = 3306
     protocol         = "tcp"
-    cidr_blocks      = ["0.0.0.0/0"]
+    cidr_blocks      = ["0.0.0.0/0"] 
     ipv6_cidr_blocks = ["::/0"]
   }
 
@@ -54,13 +54,26 @@ resource "aws_security_group" "ec2_sg" {
 }
 
 resource "aws_instance" "jenkins" {
-  ami             = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
+  ami             = "ami-0de6215d9c2342df5"  # Ubuntu 22.04 LTS AMI ID
   instance_type   = "t3.micro"
   key_name        = "terraform_keyPair"
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
     Name = "Jenkins"
+  }
+
+  root_block_device {
+    volume_size = 30
+  }
+
+  ebs_block_device {
+    device_name             = "/dev/sdf"  
+    volume_size             = 30
+    delete_on_termination   = true
+    tags = {
+      Name = "AdditionalVolume"
+    }
   }
 
   user_data = <<-EOF
@@ -71,9 +84,8 @@ resource "aws_instance" "jenkins" {
                 echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/ | sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null
                 sudo apt-get update
                 sudo apt-get install -y jenkins
-                sudo snap install -y docker
-                sudo usermod -aG docker jenkins  # Add Jenkins user to Docker group
-                sudo systemctl start docker       # Start Docker service
+                sudo apt install docker.io
+                sudo systemctl start docker      
                 sudo systemctl enable docker
                 sudo systemctl start jenkins
                 sudo systemctl enable jenkins
@@ -83,13 +95,26 @@ resource "aws_instance" "jenkins" {
 }
 
 resource "aws_instance" "my_ubuntu" {
-  ami             = "ami-0de6215d9c2342df5" # Ubuntu 22.04 LTS AMI ID
+  ami             = "ami-0de6215d9c2342df5"  # Ubuntu 22.04 LTS AMI ID
   instance_type   = "t3.micro"
-  key_name        = "terraform_keyPair"
+  key_name        = "terraform_keyPair"  
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
     Name = "My Ubuntu"
+  }
+
+  root_block_device {
+    volume_size = 30
+  }
+
+  ebs_block_device {
+    device_name             = "/dev/sdf"  
+    volume_size             = 30
+    delete_on_termination   = true
+    tags = {
+      Name = "AdditionalVolume"
+    }
   }
 
   user_data = <<-EOF
@@ -103,13 +128,26 @@ resource "aws_instance" "my_ubuntu" {
 }
 
 resource "aws_instance" "my_windows" {
-  ami             = "ami-07df29cf3e326c3ad" # Windows 10 AMI ID
+  ami             = "ami-07df29cf3e326c3ad"  # Windows 10 AMI ID
   instance_type   = "t3.micro"
-  key_name        = "terraform_keyPair"
+  key_name        = "terraform_keyPair" 
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
     Name = "My Windows"
+  }
+
+  root_block_device {
+    volume_size = 30
+  }
+
+  ebs_block_device {
+    device_name             = "xvdf"  
+    volume_size             = 30
+    delete_on_termination   = true
+    tags = {
+      Name = "AdditionalVolume"
+    }
   }
 
   user_data = <<-EOF
