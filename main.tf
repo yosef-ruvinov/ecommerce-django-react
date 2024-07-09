@@ -85,10 +85,12 @@ resource "aws_instance" "jenkins" {
                 sudo apt-get update
                 sudo apt-get install -y jenkins
                 sudo apt-get install -y docker.io
-                sudo systemctl start docker
-                sudo systemctl enable docker
                 sudo systemctl start jenkins
                 sudo systemctl enable jenkins
+                sudo systemctl start docker
+                sudo systemctl enable docker
+                usermod -aG docker jenkins
+                chmod 666 /var/run/docker.sock
                 sleep 30
                 sudo chmod +r /var/lib/jenkins/secrets/initialAdminPassword
                 EOF
