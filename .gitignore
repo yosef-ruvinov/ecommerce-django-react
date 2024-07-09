@@ -1,2 +1,8 @@
 /**/env
+<<<<<<< HEAD
 /ecommerce-django-react
+=======
+terraform.tfstate
+terraform.tfstate.backup
+terraform-provider-aws_v5.57.0_x5.exe
+>>>>>>> daa33fb65469786314be240ab8640e762dda17d7
