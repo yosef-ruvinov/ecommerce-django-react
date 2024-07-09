@@ -1,11 +1,11 @@
 pipeline {
     agent any
     environment {
-        DOCKER_USERNAME = 'yossiruvinovdocker'  // Add your Docker Hub username
-        DOCKER_HUB_CREDENTIAL = 'dockerhub_credentials'  // Add your Docker Hub credentials ID
-        GIT_REPO = 'https://github.com/yosef-ruvinov/ecommerce-django-react.git'  // Add your GitHub repository URL
-        SLACK_CHANNEL = '#devops-ecommerce'  // Add your Slack channel
-        AWS_CREDENTIALS = 'aws_credentials'  // Add your AWS credentials ID
+        DOCKER_USERNAME = 'yossiruvinovdocker'  
+        DOCKER_HUB_CREDENTIAL = 'dockerhub_credentials'  
+        GIT_REPO = 'https://github.com/yosef-ruvinov/ecommerce-django-react.git'  
+        SLACK_CHANNEL = '#devops-ecommerce'  
+        AWS_CREDENTIALS = 'aws_credentials'
     }
 
     stages {
