@@ -1,43 +1,5 @@
 pipeline {
     agent any
-<<<<<<< HEAD
-    stages {
-        stage('Checkout') {
-            steps {
-                git url: 'https://github.com/yosef-ruvinov/ecommerce-django-react.git', branch: 'main'
-            }
-        }
-        stage('Build') {
-            steps {
-                sh 'make build'
-            }
-        }
-        stage('Test') {
-            steps {
-                sh 'make test'
-            }
-        }
-        stage('Docker Build') {
-            steps {
-                script {
-                    def dockerImage = docker.build("yourdockerhubusername/ecommerce-django-react")
-                    dockerImage.push()
-                }
-            }
-        }
-        stage('Deploy') {
-            steps {
-                // Deployment steps go here
-                echo 'Deploying the application...'
-            }
-        }
-    }
-    post {
-        failure {
-            slackSend(channel: '#yourchannel', message: "Build failed: ${currentBuild.fullDisplayName}")
-        }
-    }
-=======
     environment {
         DOCKER_USERNAME = 'yossiruvinovdocker'  // Add your Docker Hub username
         DOCKER_HUB_CREDENTIAL = 'dockerhub_credentials'  // Add your Docker Hub credentials ID
@@ -104,5 +66,4 @@ pipeline {
             }
         }
     }
->>>>>>> daa33fb65469786314be240ab8640e762dda17d7
 }
