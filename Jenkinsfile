@@ -5,7 +5,7 @@ pipeline {
         GIT_REPO = 'https://github.com/yosef-ruvinov/ecommerce-django-react.git'  
         SLACK_CHANNEL = '#devops-ecommerce'  
         SLACK_CREDENTIALS = 'slack_webhook'
-        AWS_CREDENTIALS = 'aws_credentials'2
+        AWS_CREDENTIALS = 'aws_credentials'
         AWS_REGION = 'il-central-1'
         INSTANCE = 'My Ubuntu'
     }
