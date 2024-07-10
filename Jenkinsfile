@@ -1,12 +1,13 @@
 pipeline {
     agent any
     environment {
-        DOCKER_USERNAME = 'yossiruvinovdocker'  
-        DOCKER_HUB_CREDENTIAL = 'dockerhub_credentials'  
+        DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials'  
         GIT_REPO = 'https://github.com/yosef-ruvinov/ecommerce-django-react.git'  
         SLACK_CHANNEL = '#devops-ecommerce'  
         SLACK_CREDENTIALS = 'slack_webhook'
-        AWS_CREDENTIALS = 'aws_credentials'
+        AWS_CREDENTIALS = 'aws_credentials'2
+        AWS_REGION = 'il-central-1'
+        INSTANCE = 'My Ubuntu'
     }
 
     stages {
@@ -17,10 +18,20 @@ pipeline {
         }
 
         stage('Build') {
+            agent { label 'My-Ubuntu' }
             steps {
-                sh 'docker build -t yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER} .'  
+                    script {
+                        def containerName = "yosef_container"
+                        sh """
+                        if [ \$(docker ps -a -q -f name=${containerName}) ]; then
+                            docker stop ${containerName}
+                            docker rm ${containerName}
+                        fi
+                        """
+                        sh "docker build --no-cache -t yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER} ."
+                    }
+                }
             }
-        }
 
         stage('Test') {
             steps {
@@ -52,8 +63,6 @@ pipeline {
             }
         }
 
-        // Commenting out the 'Push' and 'Deployment' stages for faster testing
-        /*
         stage('Push') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
@@ -69,6 +78,5 @@ pipeline {
                 sh 'docker stack deploy -c docker-compose.yml your-app-stack'  // Replace with your deployment details
             }
         }
-        */
     }
 }
