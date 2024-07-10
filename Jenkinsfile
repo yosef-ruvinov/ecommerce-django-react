@@ -18,7 +18,6 @@ pipeline {
         }
 
         stage('Build') {
-            agent { label 'My Ubuntu' }
             steps {
                     script {
                         def containerName = "yosef_container"
