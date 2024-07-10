@@ -63,20 +63,20 @@ pipeline {
             }
         }
 
-        stage('Push') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                    sh 'docker push yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}'  // Replace with your Docker image name and tag
-                }
-            }
-        }
+    //     stage('Push') {
+    //         steps {
+    //             withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+    //                 sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+    //                 sh 'docker push yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}'  // Replace with your Docker image name and tag
+    //             }
+    //         }
+    //     }
 
-        stage('Deployment') {
-            steps {
-                // Add deployment steps here
-                sh 'docker stack deploy -c docker-compose.yml your-app-stack'  // Replace with your deployment details
-            }
-        }
-    }
+    //     stage('Deployment') {
+    //         steps {
+    //             // Add deployment steps here
+    //             sh 'docker stack deploy -c docker-compose.yml your-app-stack'  // Replace with your deployment details
+    //         }
+    //     }
+    // }
 }
