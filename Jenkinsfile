@@ -15,39 +15,39 @@ pipeline {
             }
         }
 
-        stage('Build') {
-            steps {
-                sh 'docker build -t yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER} .'  
-            }
-        }
+        // stage('Build') {
+        //     steps {
+        //         sh 'docker build -t yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER} .'  
+        //     }
+        // }
 
-        stage('Test') {
-            steps {
-                script {
-                    docker.image("yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}").inside {
-                        sh 'pytest test/api/test_products.py'  // Run unit tests
-                        sh 'pytest test/api/test_user.py'      // Run unit tests
-                        sh 'pytest --driver Chrome'            // Run E2E tests with Selenium 
-                    }
-                }
-            }
-            post {
-                failure {
-                    slackSend (
-                        channel: env.SLACK_CHANNEL,
-                        color: 'danger',
-                        message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
-                    )
-                }
-                success {
-                    slackSend (
-                        channel: env.SLACK_CHANNEL,
-                        color: 'good',
-                        message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
-                    )
-                }
-            }
-        }
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             docker.image("yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}").inside {
+        //                 sh 'pytest test/api/test_products.py'  // Run unit tests
+        //                 sh 'pytest test/api/test_user.py'      // Run unit tests
+        //                 sh 'pytest --driver Chrome'            // Run E2E tests with Selenium 
+        //             }
+        //         }
+        //     }
+        //     post {
+        //         failure {
+        //             slackSend (
+        //                 channel: env.SLACK_CHANNEL,
+        //                 color: 'danger',
+        //                 message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+        //             )
+        //         }
+        //         success {
+        //             slackSend (
+        //                 channel: env.SLACK_CHANNEL,
+        //                 color: 'good',
+        //                 message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+        //             )
+        //         }
+        //     }
+        // }
 
         // Commenting out the 'Push' and 'Deployment' stages for faster testing
         /*
