@@ -38,7 +38,7 @@ pipeline {
                         color: 'good',
                         message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
                         channel: env.SLACK_CHANNEL,
-                        credentialId: env.SLACK_CREDENTIALS
+                        tokenCredentialId: env.SLACK_CREDENTIALS
                     )
                 }
                 success {
@@ -46,7 +46,7 @@ pipeline {
                         color: 'danger',
                         message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
                         channel: env.SLACK_CHANNEL,
-                        credentialId: env.SLACK_CREDENTIALS           
+                        tokenCredentialId: env.SLACK_CREDENTIALS           
                     )
                 }
             }
