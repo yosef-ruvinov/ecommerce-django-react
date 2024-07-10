@@ -11,20 +11,20 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: "${GIT_REPO}", branch: 'main'  // Checkout your git repo
+                git url: "${GIT_REPO}", branch: 'main'  
             }
         }
 
         stage('Build') {
             steps {
-                sh 'docker build -t yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER} .'  // Build the docker image
+                sh 'docker build -t yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER} .'  
             }
         }
 
         stage('Test') {
             steps {
                 script {
-                    def testResult = sh returnStatus: true, script: 'your test commands here'  // *** Replace with your actual test commands
+                    def testResult = sh returnStatus: true, script: 'tests/api'  
                     if (testResult == 0) {
                         currentBuild.result = 'SUCCESS'
                     } else {
@@ -50,9 +50,11 @@ pipeline {
             }
         }
 
+        // Commenting out the 'Push' and 'Deployment' stages for faster testing
+        /*
         stage('Push') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'your-docker-hub-credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                     sh 'docker push yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}'  // Replace with your Docker image name and tag
                 }
@@ -65,5 +67,6 @@ pipeline {
                 sh 'docker stack deploy -c docker-compose.yml your-app-stack'  // Replace with your deployment details
             }
         }
+        */
     }
 }
