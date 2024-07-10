@@ -26,9 +26,9 @@ pipeline {
             steps {
                 script {
                     docker.image("yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}").inside {
-                        sh 'pytest test/api/test_products.py'  // Run unit tests
-                        sh 'pytest test/api/test_user.py'      // Run unit tests
-                        sh 'pytest --driver Chrome'            // Run E2E tests with Selenium 
+                        sh 'pytest test/api/test_products.py' || error("Unit tests failed")  // Run unit tests
+                        sh 'pytest test/api/test_user.py' || error("Unit tests failed")      // Run unit tests
+                        sh 'pytest --driver Chrome' || error("E2E tests failed")            // Run E2E tests with Selenium 
                     }
                 }
             }
