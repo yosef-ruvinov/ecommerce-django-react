@@ -1,5 +1,5 @@
 pipeline {
-    agent none
+    agent any
     environment {
         DOCKER_USERNAME = 'yossiruvinovdocker'  
         DOCKER_HUB_CREDENTIAL = 'dockerhub_credentials'  
