@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
     environment {
         DOCKER_USERNAME = 'yossiruvinovdocker'  
         DOCKER_HUB_CREDENTIAL = 'dockerhub_credentials'  
@@ -27,7 +27,7 @@ pipeline {
                     docker.image("yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}").inside {
                         sh 'pytest test/api/test_products.py'  // Run unit tests
                         sh 'pytest test/api/test_user.py'      // Run unit tests
-                        sh 'pytest --driver Chrome'            // Run E2E tests with Selenium (Assuming tests are set up for Selenium)
+                        sh 'pytest --driver Chrome'            // Run E2E tests with Selenium 
                     }
                 }
             }
