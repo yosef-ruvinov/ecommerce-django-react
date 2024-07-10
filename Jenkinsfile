@@ -35,16 +35,18 @@ pipeline {
             post {
                 failure {
                     slackSend (
+                        color: 'good',
+                        message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
                         channel: env.SLACK_CHANNEL,
-                        color: 'danger',
-                        message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+                        credentialId: env.SLACK_CREDENTIALS
                     )
                 }
                 success {
                     slackSend (
+                        color: 'danger',
+                        message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
                         channel: env.SLACK_CHANNEL,
-                        color: 'good',
-                        message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})"
+                        credentialId: env.SLACK_CREDENTIALS           
                     )
                 }
             }
