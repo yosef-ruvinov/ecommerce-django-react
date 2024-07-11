@@ -23,18 +23,9 @@ pipeline {
             agent { label 'my_ubuntu' }
             steps {
                 script {
-                    docker.build("python-app:latest", "-f Dockerfile .")
-                }
-            }
-        }
-
-        stage('Docker Push') {
-            agent { label 'my_ubuntu' }
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                        sh "docker push yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}"
+                    docker.withRegistry('https://registry-1.docker.io', DOCKER_HUB_CREDENTIALS) {
+                        def dockerImage = docker.build("python-app:latest", "-f Dockerfile .")
+                        dockerImage.push()
                     }
                 }
             }
@@ -55,6 +46,7 @@ pipeline {
                 }
             }
         }
+    }
 
         // stage('Test') {
         //     agent { label 'my_ubuntu' }
