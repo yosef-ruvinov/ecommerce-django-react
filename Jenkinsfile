@@ -56,18 +56,18 @@ pipeline {
             }
         }
 
-    //     stage('Test') {
-    //         agent { label 'ubuntu' }
-    //         steps {
-    //             script {
-    //                 def containerName = "yosef_container"
-    //                 sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
-    //                 sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
-    //                 sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
-    //             }
-    //         }
-    //     }
-    // }
+        // stage('Test') {
+        //     agent { label 'ubuntu' }
+        //     steps {
+        //         script {
+        //             def containerName = "yosef_container"
+        //             sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
+        //             sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
+        //             sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
+        //         }
+        //     }
+        // }
+    }
 
     post {
         success {
