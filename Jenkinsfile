@@ -32,9 +32,7 @@ pipeline {
             agent { label 'my_ubuntu' }
             steps {
                 script {
-                    // Use withCredentials to securely access Docker Hub
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        // Use --password-stdin to securely log in to Docker Hub
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                         sh "docker push yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}"
                     }
