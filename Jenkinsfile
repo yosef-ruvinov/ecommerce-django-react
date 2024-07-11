@@ -23,9 +23,18 @@ pipeline {
             agent { label 'my_ubuntu' }
             steps {
                 script {
-                    docker.withRegistry('https://registry-1.docker.io', DOCKER_HUB_CREDENTIALS) {
-                        def dockerImage = docker.build("python-app:latest", "-f Dockerfile .")
-                        dockerImage.push()
+                    docker.build("python-app:latest", "-f Dockerfile .")
+                }
+            }
+        }
+
+        stage('Docker Push') {
+            agent { label 'my_ubuntu' }
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                        sh "docker push yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}"
                     }
                 }
             }
@@ -47,20 +56,17 @@ pipeline {
             }
         }
 
-        // Uncomment and fix indentation for the following stage if needed
-        /*
-        stage('Test') {
-            agent { label 'my_ubuntu' }
-            steps {
-                script {
-                    def containerName = "yosef_container"
-                    sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
-                    sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
-                    sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
-                }
-            }
-        }
-        */
+        // stage('Test') {
+        //     agent { label 'my_ubuntu' }
+        //     steps {
+        //         script {
+        //             def containerName = "yosef_container"
+        //             sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
+        //             sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
+        //             sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
+        //         }
+        //     }
+        // }
     }
 
     post {
