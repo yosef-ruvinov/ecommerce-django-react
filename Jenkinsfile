@@ -68,27 +68,27 @@ pipeline {
         //         }
         //     }
         // }
+    }
 
-        post {
-            success {
-                slackSend (
-                    color: 'good',
-                    message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
-                    channel: env.SLACK_CHANNEL,
-                    tokenCredentialId: env.SLACK_CREDENTIALS
-                )
-            }
-            failure {
-                slackSend (
-                    color: 'danger',
-                    message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
-                    channel: env.SLACK_CHANNEL,
-                    tokenCredentialId: env.SLACK_CREDENTIALS
-                )
-            }
-            always {
-                cleanWs()
-            }
+    post {
+        success {
+            slackSend (
+                color: 'good',
+                message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
+                channel: env.SLACK_CHANNEL,
+                tokenCredentialId: env.SLACK_CREDENTIALS
+            )
+        }
+        failure {
+            slackSend (
+                color: 'danger',
+                message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
+                channel: env.SLACK_CHANNEL,
+                tokenCredentialId: env.SLACK_CREDENTIALS
+            )
+        }
+        always {
+            cleanWs()
         }
     }
 }
