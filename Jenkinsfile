@@ -95,7 +95,7 @@ pipeline {
         success {
             script {
                 slackSend (
-                    co  lor: 'good', 
+                    color: 'good', 
                     channel: "${SLACK_CHANNEL}",
                     tokenCredentialId: "${SLACK_CREDENTIALS}",
                     message: "Build successful! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
