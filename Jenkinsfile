@@ -20,7 +20,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("your-image-name:tag", "-f path/to/your/Dockerfile .")
+                    docker.build("python-app:latest", "-f .")
                 }
             }
         }
