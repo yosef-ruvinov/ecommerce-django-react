@@ -84,6 +84,7 @@ resource "aws_instance" "jenkins" {
                 sudo apt-get update
                 sudo apt-get install -y jenkins
                 sudo apt-get install -y docker.io
+                docker buildx install  
                 sudo systemctl start docker
                 sudo systemctl enable docker
                 sudo systemctl start jenkins
@@ -118,8 +119,9 @@ resource "aws_instance" "my_ubuntu" {
 
   user_data = <<-EOF
               #!/bin/bash
-              sudo apt update
-              sudo apt install -y openjdk-17-jdk git docker.io
+              sudo apt-get update
+              sudo apt-get install -y openjdk-17-jdk git docker.io
+              docker buildx install 
               sudo usermod -aG docker ubuntu
               sudo systemctl start docker
               sudo systemctl enable docker
