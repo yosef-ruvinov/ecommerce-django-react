@@ -15,15 +15,16 @@ pipeline {
 
         stages {
         stage('Kill Existing Container') {
+            agent { label 'my_ubuntu' }
             steps {
                 script {
-                    // Stop and remove the existing container
                     sh 'docker stop ecommerce_project_container || true'
                     sh 'docker rm ecommerce_project_container || true'
                 }
             }
         }
         stage('Kill Existing Image') {
+            agent { label 'my_ubuntu' }
             steps {
                 script {
                     sh 'docker rmi yossiruvinovdocker/ecommerce-project:latest || true'
