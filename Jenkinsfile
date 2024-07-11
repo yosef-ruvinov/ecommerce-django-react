@@ -22,7 +22,7 @@ pipeline {
         }
 
         stage('Build Docker Image') {
-            agent { label 'my_ubuntu' }
+            agent { label 'my_ubuntudd' }
             steps {
                 script {
                     docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "-f Dockerfile .")
