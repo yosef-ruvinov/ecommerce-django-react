@@ -27,33 +27,33 @@ pipeline {
             }
         }
 
-        stage('Docker Push') {
-            agent { label 'ubuntu' }  
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-                        sh "docker push yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}"
-                    }
-                }
-            }
-        }
+        // stage('Docker Push') {
+        //     agent { label 'ubuntu' }  
+        //     steps {
+        //         script {
+        //             withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+        //                 sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+        //                 sh "docker push yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}"
+        //             }
+        //         }
+        //     }
+        // }
 
-        stage('Run Docker Container') {
-            agent { label 'ubuntu' } 
-            steps {
-                script {
-                    def containerName = "yosef_container"
-                    sh """
-                    if [ \$(docker ps -a -q -f name=${containerName}) ]; then
-                        docker stop ${containerName}
-                        docker rm ${containerName}
-                    fi
-                    docker run -d --name ${containerName} -p 8000:8000 yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}
-                    """
-                }
-            }
-        }
+        // stage('Run Docker Container') {
+        //     agent { label 'ubuntu' } 
+        //     steps {
+        //         script {
+        //             def containerName = "yosef_container"
+        //             sh """
+        //             if [ \$(docker ps -a -q -f name=${containerName}) ]; then
+        //                 docker stop ${containerName}
+        //                 docker rm ${containerName}
+        //             fi
+        //             docker run -d --name ${containerName} -p 8000:8000 yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}
+        //             """
+        //         }
+        //     }
+        // }
 
     //     stage('Test') {
     //         agent { label 'ubuntu' }  
