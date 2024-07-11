@@ -4,7 +4,6 @@ pipeline {
     environment {
         DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials'
         GIT_REPO = 'https://github.com/yosef-ruvinov/ecommerce-django-react.git'
-        SLACK_CHANNEL = '#devops-ecommerce'
         SLACK_CREDENTIALS = 'slack_token'
         AWS_CREDENTIALS = 'aws_credentials'
         AWS_REGION = 'il-central-1'
