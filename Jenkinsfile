@@ -13,7 +13,24 @@ pipeline {
         INSTANCE = 'My Ubuntu'
     }
 
-    stages {
+        stages {
+        stage('Kill Existing Container') {
+            steps {
+                script {
+                    // Stop and remove the existing container
+                    sh 'docker stop ecommerce_project_container || true'
+                    sh 'docker rm ecommerce_project_container || true'
+                }
+            }
+        }
+        stage('Kill Existing Image') {
+            steps {
+                script {
+                    sh 'docker rmi yossiruvinovdocker/ecommerce-project:latest || true'
+                }
+            }
+        }
+
         stage('Checkout') {
             agent { label 'my_ubuntu' }
             steps {
@@ -38,13 +55,11 @@ pipeline {
                     docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_credentials') {
                     def image = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
                     image.push()
+                        }
+                    }
                 }
             }
         }
-    }
-}
-
-
 
         stage('Run Docker Container') {
             agent { label 'my_ubuntu' }
@@ -62,7 +77,6 @@ pipeline {
             }
         }
 
-    }
         // stage('Test') {
         //     agent { label 'my_ubuntu' }
         //     steps {
@@ -74,6 +88,7 @@ pipeline {
         //         }
         //     }
         // }
+    }
 
     post {
         success {
