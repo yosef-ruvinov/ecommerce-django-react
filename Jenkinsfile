@@ -46,7 +46,7 @@ pipeline {
                 }
             }
         }
-    }
+    
 
         // stage('Test') {
         //     agent { label 'my_ubuntu' }
