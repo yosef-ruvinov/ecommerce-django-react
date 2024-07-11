@@ -94,18 +94,18 @@ pipeline {
     post {
         success {
             slackSend (
-                color: 'good',
-                message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
-                channel: env.SLACK_CHANNEL,
-                tokenCredentialId: env.SLACK_CREDENTIALS
+                color: 'good', 
+                channel: '#devops-ecommerce',
+                tokenCredentialId: 'slack_token',
+                message: "Hurray! Build successful! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
             )
         }
         failure {
             slackSend (
-                color: 'danger',
-                message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
-                channel: env.SLACK_CHANNEL,
-                tokenCredentialId: env.SLACK_CREDENTIALS
+                color: 'danger', 
+                channel: '#devops-ecommerce', 
+                tokenCredentialId: 'slack_token', 
+                message: "*ALERT, CRIT: Build Failed! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
             )
         }
         always {
