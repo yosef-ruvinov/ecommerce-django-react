@@ -33,14 +33,17 @@ pipeline {
         stage('Docker Push') {
             agent { label 'my_ubuntu' }
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                        sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                    script {
+                        docker.withRegistry('https://registry.hub.docker.com', 'dockerhub_credentials') {
+                            def image = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                            image.push()
+                        }
                     }
                 }
             }
         }
+
 
         stage('Run Docker Container') {
             agent { label 'my_ubuntu' }
@@ -57,6 +60,7 @@ pipeline {
                 }
             }
         }
+
     }
         // stage('Test') {
         //     agent { label 'my_ubuntu' }
