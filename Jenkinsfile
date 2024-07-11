@@ -17,17 +17,10 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
                 script {
-                    def containerName = "yosef_container"
-                    sh """
-                    if [ \$(docker ps -a -q -f name=${containerName}) ]; then
-                        docker stop ${containerName}
-                        docker rm ${containerName}
-                    fi
-                    """
-                    sh "docker build --no-cache -t yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER} ."
+                    docker.build("your-image-name:tag", "-f path/to/your/Dockerfile .")
                 }
             }
         }
