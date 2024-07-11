@@ -46,19 +46,21 @@ pipeline {
                 }
             }
         }
-    
 
-        // stage('Test') {
-        //     agent { label 'my_ubuntu' }
-        //     steps {
-        //         script {
-        //             def containerName = "yosef_container"
-        //             sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
-        //             sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
-        //             sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
-        //         }
-        //     }
-        // }
+        // Uncomment and fix indentation for the following stage if needed
+        /*
+        stage('Test') {
+            agent { label 'my_ubuntu' }
+            steps {
+                script {
+                    def containerName = "yosef_container"
+                    sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
+                    sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
+                    sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
+                }
+            }
+        }
+        */
     }
 
     post {
