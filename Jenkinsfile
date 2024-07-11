@@ -96,7 +96,7 @@ pipeline {
             script {
                 slackSend (
                     co  lor: 'good', 
-                    "${SLACK_CHANNEL}",
+                    channel: "${SLACK_CHANNEL}",
                     tokenCredentialId: "${SLACK_CREDENTIALS}",
                     message: "Build successful! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
                 )
@@ -106,7 +106,7 @@ pipeline {
             script {
                 slackSend (
                     color: 'danger', 
-                    "${SLACK_CHANNEL}", 
+                    channel: "${SLACK_CHANNEL}", 
                     tokenCredentialId: "${SLACK_CREDENTIALS}", 
                     message: "*p1. CRIT: Build Failed! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
                 )
