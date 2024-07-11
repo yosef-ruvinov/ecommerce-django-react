@@ -56,7 +56,7 @@ pipeline {
                         docker stop ${containerName}
                         docker rm ${containerName}
                     fi
-                    docker run -d --name ${containerName} -p 8000:8000 ${DOCKER_IMAGE}:${DOCKER_TAG}
+                    docker run -d --name ecommerce_project_container -p 8000:8000 yossiruvinovdocker/ecommerce-project:latest
                     """
                 }
             }
