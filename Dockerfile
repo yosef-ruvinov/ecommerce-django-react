@@ -1,12 +1,11 @@
-FROM python:3
+FROM python:3.9.6-alpine
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /code
 COPY requirements.txt requirements.txt
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libjpeg-dev \
-    zlib1g-dev
+RUN pip install --upgrade pip
+RUN apk add -u zlib-dev jpeg-dev gcc musl-dev
+RUN pip install --upgrade defusedxml olefile Pillow
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["python", "manage.py","runserver"]
+CMD ["python","manage.py","runserver"]
