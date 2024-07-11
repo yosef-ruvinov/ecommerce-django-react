@@ -32,8 +32,10 @@ pipeline {
             agent { label 'my_ubuntu' }
             steps {
                 script {
+                    // Use withCredentials to securely access Docker Hub
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                        // Use --password-stdin to securely log in to Docker Hub
+                        sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
                         sh "docker push yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}"
                     }
                 }
@@ -55,18 +57,6 @@ pipeline {
                 }
             }
         }
-
-        // stage('Test') {
-        //     agent { label 'my_ubuntu' }
-        //     steps {
-        //         script {
-        //             def containerName = "yosef_container"
-        //             sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
-        //             sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
-        //             sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
-        //         }
-        //     }
-        // }
     }
 
     post {
