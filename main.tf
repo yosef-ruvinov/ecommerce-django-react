@@ -55,7 +55,7 @@ resource "aws_security_group" "ec2_sg" {
 resource "aws_instance" "jenkins" {
   ami             = "ami-0de6215d9c2342df5"  # Ubuntu 22.04 LTS AMI ID
   instance_type   = "t3.micro"
-  key_name        = "terraform_keyPair" 
+  key_name        = "keyPair" 
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
@@ -97,7 +97,7 @@ resource "aws_instance" "jenkins" {
 resource "aws_instance" "my_ubuntu" {
   ami             = "ami-0de6215d9c2342df5"  # Ubuntu 22.04 LTS AMI ID
   instance_type   = "t3.micro"
-  key_name        = "terraform_keyPair"  
+  key_name        = "keyPair"  
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
@@ -134,7 +134,7 @@ resource "aws_instance" "my_ubuntu" {
 resource "aws_instance" "my_windows" {
   ami             = "ami-07df29cf3e326c3ad"  # Windows 10 AMI ID
   instance_type   = "t3.micro"
-  key_name        = "terraform_keyPair" 
+  key_name        = "keyPair" 
   security_groups = [aws_security_group.ec2_sg.name]
 
   tags = {
