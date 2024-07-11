@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'ubuntu' }
+    agent { label 'my_ubuntu' }
     
     environment {
         DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials'
@@ -13,14 +13,14 @@ pipeline {
 
     stages {
         stage('Checkout') {
-            agent { label 'ubuntu' }
+            agent { label 'my_ubuntu' }
             steps {
                 git url: "${GIT_REPO}", branch: 'main'
             }
         }
 
         stage('Build Docker Image') {
-            agent { label 'ubuntu' }
+            agent { label 'my_ubuntu' }
             steps {
                 script {
                     docker.build("python-app:latest", "-f Dockerfile .")
@@ -29,7 +29,7 @@ pipeline {
         }
 
         stage('Docker Push') {
-            agent { label 'ubuntu' }
+            agent { label 'my_ubuntu' }
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
@@ -41,7 +41,7 @@ pipeline {
         }
 
         stage('Run Docker Container') {
-            agent { label 'ubuntu' }
+            agent { label 'my_ubuntu' }
             steps {
                 script {
                     def containerName = "yosef_container"
@@ -57,7 +57,7 @@ pipeline {
         }
 
         // stage('Test') {
-        //     agent { label 'ubuntu' }
+        //     agent { label 'my_ubuntu' }
         //     steps {
         //         script {
         //             def containerName = "yosef_container"
