@@ -120,6 +120,9 @@ resource "aws_instance" "my_ubuntu" {
   user_data = <<-EOF
               #!/bin/bash
               sudo apt-get update
+              sudo apt install openssh-server
+              sudo systemctl start ssh
+              sudo systemctl enable ssh
               sudo apt-get install -y openjdk-17-jdk git docker.io
               docker buildx install 
               sudo usermod -aG docker ubuntu
