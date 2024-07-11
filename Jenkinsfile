@@ -8,6 +8,8 @@ pipeline {
         SLACK_CREDENTIALS = 'slack_token'
         AWS_CREDENTIALS = 'aws_credentials'
         AWS_REGION = 'il-central-1'
+        DOCKER_IMAGE = 'ecommerce-app'
+        DOCKER_TAG = 'latest'
         INSTANCE = 'My Ubuntu'
     }
 
@@ -23,7 +25,7 @@ pipeline {
             agent { label 'my_ubuntu' }
             steps {
                 script {
-                    docker.build("python-app:latest", "-f Dockerfile .")
+                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "-f Dockerfile .")
                 }
             }
         }
@@ -34,7 +36,7 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                         sh 'echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin'
-                        sh "docker push yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}"
+                        sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
                     }
                 }
             }
@@ -44,18 +46,29 @@ pipeline {
             agent { label 'my_ubuntu' }
             steps {
                 script {
-                    def containerName = "yosef_container"
+                    def containerName = "${DOCKER_IMAGE}_container"
                     sh """
                     if [ \$(docker ps -a -q -f name=${containerName}) ]; then
                         docker stop ${containerName}
                         docker rm ${containerName}
                     fi
-                    docker run -d --name ${containerName} -p 8000:8000 yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}
+                    docker run -d --name ${containerName} -p 8000:8000 ${DOCKER_IMAGE}:${DOCKER_TAG}
                     """
                 }
             }
         }
     }
+        // stage('Test') {
+        //     agent { label 'my_ubuntu' }
+        //     steps {
+        //         script {
+        //             def containerName = "yosef_container"
+        //             sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
+        //             sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
+        //             sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
+        //         }
+        //     }
+        // }
 
     post {
         success {
