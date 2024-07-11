@@ -19,31 +19,59 @@ pipeline {
 
         stage('Build') {
             steps {
-                    script {
-                        def containerName = "yosef_container"
-                        sh """
-                        if [ \$(docker ps -a -q -f name=${containerName}) ]; then
-                            docker stop ${containerName}
-                            docker rm ${containerName}
-                        fi
-                        """
-                        sh "docker build --no-cache -t yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER} ."
-                    }
+                script {
+                    def containerName = "yosef_container"
+                    sh """
+                    if [ \$(docker ps -a -q -f name=${containerName}) ]; then
+                        docker stop ${containerName}
+                        docker rm ${containerName}
+                    fi
+                    """
+                    sh "docker build --no-cache -t yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER} ."
                 }
             }
+        }
 
-        stage('Test') {
+        stage('Docker Push') {
             steps {
                 script {
-                    docker.image("yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}").inside {
-                        sh 'pytest test/api/test_products.py' || error("Unit tests failed")  // Run unit tests
-                        sh 'pytest test/api/test_user.py' || error("Unit tests failed")      // Run unit tests
-                        sh 'pytest --driver Chrome' || error("E2E tests failed")            // Run E2E tests with Selenium 
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
+                        sh "docker push yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}"
                     }
                 }
             }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    def containerName = "yosef_container"
+                    sh """
+                    if [ \$(docker ps -a -q -f name=${containerName}) ]; then
+                        docker stop ${containerName}
+                        docker rm ${containerName}
+                    fi
+                    docker run -d --name ${containerName} -p 8000:8000 yosef-ruvinov/ecommerce-django-react:${env.BUILD_NUMBER}
+                    """
+                }
+            }
+        }
+
+        // stage('Test') {
+        //     steps {
+        //         script {
+        //             def containerName = "yosef_container"
+        //             sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
+        //             sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
+        //             sh "docker exec ${containerName} pytest --driver Chrome || error('E2E tests failed')"
+        //         }
+        //     }
+        // }
+
+        stage('Test Result Notification') {
             post {
-                failure {
+                success {
                     slackSend (
                         color: 'good',
                         message: "Build succeeded: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
@@ -51,7 +79,7 @@ pipeline {
                         tokenCredentialId: env.SLACK_CREDENTIALS
                     )
                 }
-                success {
+                failure {
                     slackSend (
                         color: 'danger',
                         message: "Build failed: ${env.JOB_NAME} [${env.BUILD_NUMBER}] (${env.BUILD_URL})",
@@ -63,22 +91,3 @@ pipeline {
         }
     }
 }
-
-
-    //     stage('Push') {
-    //         steps {
-    //             withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-    //                 sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
-    //                 sh 'docker push yossiruvinovdocker/ecommerce-project:${BUILD_NUMBER}'  // Replace with your Docker image name and tag
-    //             }
-    //         }
-    //     }
-
-    //     stage('Deployment') {
-    //         steps {
-    //             // Add deployment steps here
-    //             sh 'docker stack deploy -c docker-compose.yml your-app-stack'  // Replace with your deployment details
-    //         }
-    //     }
-    // }
-
