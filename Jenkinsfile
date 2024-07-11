@@ -93,20 +93,24 @@ pipeline {
 
     post {
         success {
-            slackSend (
-                color: 'good', 
-                channel: '#devops-ecommerce',
-                tokenCredentialId: 'slack_token',
-                message: "Hurray! Build successful! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
-            )
+            script {
+                slackSend (
+                    color: 'good',
+                    channel: "${SLACK_CHANNEL}",
+                    tokenCredentialId: "${SLACK_CREDENTIALS}",
+                    message: "Hurray! Build successful! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+                )
+            }
         }
         failure {
-            slackSend (
-                color: 'danger', 
-                channel: '#devops-ecommerce', 
-                tokenCredentialId: 'slack_token', 
-                message: "*ALERT, CRIT: Build Failed! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})",
-            )
+            script {
+                slackSend (
+                    color: 'danger',
+                    channel: "${SLACK_CHANNEL}",
+                    tokenCredentialId: "${SLACK_CREDENTIALS}",
+                    message: "*ALERT, CRIT: Build Failed! Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+                )
+            }
         }
         always {
             cleanWs()
