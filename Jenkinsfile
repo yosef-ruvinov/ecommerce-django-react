@@ -1,5 +1,7 @@
 pipeline {
-    agent { label 'my_ubuntu' }
+    agent { 
+        label 'my_ubuntu' 
+    }
     
     environment {
         DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials'
@@ -13,7 +15,7 @@ pipeline {
         INSTANCE = 'My Ubuntu'
     }
 
-        stages {
+    stages {
         stage('Kill Existing Container') {
             agent { label 'my_ubuntu' }
             steps {
@@ -23,6 +25,7 @@ pipeline {
                 }
             }
         }
+
         stage('Kill Existing Image') {
             agent { label 'my_ubuntu' }
             steps {
@@ -53,9 +56,9 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_credentials') {
-                    def image = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                    image.push()
+                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_credentials') {
+                            def image = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                            image.push()
                         }
                     }
                 }
@@ -101,6 +104,7 @@ pipeline {
                 )
             }
         }
+
         failure {
             script {
                 slackSend (
@@ -111,6 +115,7 @@ pipeline {
                 )
             }
         }
+
         always {
             cleanWs()
         }
