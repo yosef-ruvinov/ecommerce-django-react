@@ -42,25 +42,21 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "-f Dockerfile .")
+                    sh 'docker build -t yossiruvinovdocker/ecommerce-project:latest -f Dockerfile .'
                 }
             }
         }
-
-        stage('Docker Push') {
+        stage('Push Docker Image to Docker Hub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                    script {
-                        docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
-                            def image = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
-                            image.push()
-                        }
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_credentials') {
+                        sh 'docker push yossiruvinovdocker/ecommerce-project:latest'
                     }
                 }
             }
         }
 
-        stage('Run Docker Container') {
+        stage('Deploy Docker Container') {
             steps {
                 script {
                     def containerName = "ecommerce_project_container"
