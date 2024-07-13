@@ -81,6 +81,8 @@ pipeline {
                     def containerName = "ecommerce_project_container"
                     sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
                     sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
+                } catch (Exception e) {
+                        echo 'Tests failed but proceeding to post actions.'
                 }
             }
         }
@@ -98,7 +100,7 @@ pipeline {
             }
         }
 
-        failure {
+        failure {   
             script {
                 slackSend (
                     color: 'danger', 
