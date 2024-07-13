@@ -74,8 +74,8 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    sh "docker exec ${CONTAINER_NAME} pytest test/api/test_products.py || true"
-                    sh "docker exec ${CONTAINER_NAME} pytest test/api/test_user.py || true"
+                    sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_products.py || true"
+                    sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_user.py || true"
                 }
             }
         }
