@@ -84,20 +84,24 @@ pipeline {
     post {
         always {
             script {
-                if (currentBuild.result == 'SUCCESS') {
-                    slackSend (
-                        color: 'good', 
-                        channel: "${SLACK_CHANNEL}",
-                        tokenCredentialId: "${SLACK_CREDENTIALS}",
-                        message: "Build and Deployment Successful! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-                    )
-                } else {
-                    slackSend (
-                        color: 'danger', 
-                        channel: "${SLACK_CHANNEL}", 
-                        tokenCredentialId: "${SLACK_CREDENTIALS}", 
-                        message: "Build or Deployment Failed! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-                    )
+                try {
+                    if (currentBuild.result == 'SUCCESS') {
+                        slackSend (
+                            color: 'good', 
+                            channel: "${SLACK_CHANNEL}",
+                            tokenCredentialId: "${SLACK_CREDENTIALS}",
+                            message: "Build and Deployment Successful! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+                        )
+                    } else {
+                        slackSend (
+                            color: 'danger', 
+                            channel: "${SLACK_CHANNEL}", 
+                            tokenCredentialId: "${SLACK_CREDENTIALS}", 
+                            message: "Build or Deployment Failed! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+                        )
+                    }
+                } catch (Exception e) {
+                    echo "Failed to send Slack notification: ${e.getMessage()}"
                 }
             }
             cleanWs()
