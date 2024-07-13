@@ -84,7 +84,8 @@ pipeline {
                         sh "docker exec ${containerName} pytest test/api/test_user.py"
                     } catch (Exception e) {
                         echo 'Tests failed but proceeding to post actions.'
-                }   
+                    }
+                }
             }
         }
     }
