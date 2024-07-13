@@ -90,6 +90,7 @@ pipeline {
                 try {
                     if (currentBuild.result == 'SUCCESS') {
                         slackSend (
+                            baseUrl: "${env.SLACK_BASE_URL}"
                             color: 'good', 
                             channel: "${SLACK_CHANNEL}",
                             tokenCredentialId: "${SLACK_CREDENTIALS}",
@@ -97,6 +98,7 @@ pipeline {
                         )
                     } else {
                         slackSend (
+                            baseUrl: "${env.SLACK_BASE_URL}"
                             color: 'danger', 
                             channel: "${SLACK_CHANNEL}", 
                             tokenCredentialId: "${SLACK_CREDENTIALS}", 
