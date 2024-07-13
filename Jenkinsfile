@@ -7,10 +7,6 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials'
         GIT_REPO = 'https://github.com/yosef-ruvinov/ecommerce-django-react.git'
         SLACK_CHANNEL = '#devops-ecommerce'
-        SLACK_CREDENTIALS = 'slack_token'
-        SLACK_BASE_URL = 'https://slack.com/api'
-        SLACK_ICON_EMOJI = ':robot_face:'
-        SLACK_USERNAME = 'Jenkins Bot'
         AWS_CREDENTIALS = 'aws_credentials'
         AWS_REGION = 'il-central-1'
         DOCKER_IMAGE = 'yossiruvinovdocker/ecommerce-project'
@@ -83,25 +79,11 @@ pipeline {
             }
         }
     }
-
     post {
         always {
-            script {
-                def message = currentBuild.result == 'SUCCESS' ? 
-                    "Build and Deployment Successful! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})" :
-                    "Build or Deployment Failed! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-
-                slackSend (
-                    baseUrl: "${env.SLACK_BASE_URL}",
-                    color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger', 
-                    channel: "${env.SLACK_CHANNEL}",
-                    tokenCredentialId: "${env.SLACK_CREDENTIALS}",
-                    message: message,
-                    iconEmoji: "${env.SLACK_ICON_EMOJI}",
-                    username: "${env.SLACK_USERNAME}"
-                )
-            }
-            cleanWs()
+            //Add channel name
+            slackSend channel: "${env.SLACK_CHANNEL}",
+            message: "Find Status of Pipeline:- ${currentBuild.currentResult} ${env.JOB_NAME} ${env.BUILD_NUMBER} ${BUILD_URL}"
         }
     }
 }
