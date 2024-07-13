@@ -10,6 +10,8 @@ pipeline {
         SLACK_CREDENTIALS = 'slack_token'
         AWS_CREDENTIALS = 'aws_credentials'
         AWS_REGION = 'il-central-1'
+        DOCKER_IMAGE = 'yossiruvinovdocker/ecommerce-project'
+        DOCKER_TAG = 'latest'
         INSTANCE = 'My Ubuntu'
     }
 
