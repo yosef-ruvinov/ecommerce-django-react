@@ -16,8 +16,13 @@ pipeline {
     }
 
     stages {
+        stage('Checkout') {
+            steps {
+                git url: "${GIT_REPO}", branch: 'main'
+            }
+        }
+
         stage('Kill Existing Container') {
-            agent { label 'my_ubuntu' }
             steps {
                 script {
                     sh 'docker stop ecommerce_project_container || true'
@@ -27,23 +32,14 @@ pipeline {
         }
 
         stage('Kill Existing Image') {
-            agent { label 'my_ubuntu' }
             steps {
                 script {
-                    sh 'docker rmi yossiruvinovdocker/ecommerce-project:latest || true'
+                    sh 'docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} || true'
                 }
             }
         }
 
-        stage('Checkout') {
-            agent { label 'my_ubuntu' }
-            steps {
-                git url: "${GIT_REPO}", branch: 'main'
-            }
-        }
-
         stage('Build Docker Image') {
-            agent { label 'my_ubuntu' }
             steps {
                 script {
                     docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}", "-f Dockerfile .")
@@ -52,11 +48,10 @@ pipeline {
         }
 
         stage('Docker Push') {
-            agent { label 'my_ubuntu' }
             steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub_credentials', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_HUB_CREDENTIALS}", usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
                     script {
-                        docker.withRegistry('https://index.docker.io/v1/', 'dockerhub_credentials') {
+                        docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
                             def image = docker.image("${DOCKER_IMAGE}:${DOCKER_TAG}")
                             image.push()
                         }
@@ -66,26 +61,24 @@ pipeline {
         }
 
         stage('Run Docker Container') {
-            agent { label 'my_ubuntu' }
             steps {
                 script {
-                    def containerName = "${DOCKER_IMAGE}_container"
+                    def containerName = "ecommerce_project_container"
                     sh """
                     if [ \$(docker ps -a -q -f name=${containerName}) ]; then
                         docker stop ${containerName}
                         docker rm ${containerName}
                     fi
-                    docker run -d --name ecommerce_project_container -p 8000:8000 yossiruvinovdocker/ecommerce-project:latest
+                    docker run -d --name ${containerName} -p 8000:8000 ${DOCKER_IMAGE}:${DOCKER_TAG}
                     """
                 }
             }
         }
 
         stage('Test') {
-            agent { label 'my_ubuntu' }
             steps {
                 script {
-                    def containerName = "yosef_container"
+                    def containerName = "ecommerce_project_container"
                     sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
                     sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
                 }
