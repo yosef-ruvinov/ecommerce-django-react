@@ -82,14 +82,12 @@ pipeline {
     }
     post {
             success {
-                slackSend(notifyCommitters: true, channel: SLACK_CHANNEL, color: 'good', message: "Build ${env.BUILD_NUMBER} Success: ${env.BUILD_URL}")
+                slackSend(channel: SLACK_CHANNEL, color: 'good', message: "Build ${env.BUILD_NUMBER} Success: ${env.BUILD_URL}")
                 echo 'Deployment successful!'
             }
             failure {
-            script {
-                def msg = "Build failed at stage: ${currentBuild.currentResult}"
-                slackSend(notifyCommitters: true, channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}")
-                }
-            }
+                slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}")
+                echo 'Deployment failed!'
+            }   
         }
     }
