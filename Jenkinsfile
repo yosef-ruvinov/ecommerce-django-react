@@ -7,6 +7,7 @@ pipeline {
         DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials'
         GIT_REPO = 'https://github.com/yosef-ruvinov/ecommerce-django-react.git'
         SLACK_CHANNEL = '#devops-ecommerce'
+        SLACK_CREDENTIALS = 'slack_webhook'
         AWS_CREDENTIALS = 'aws_credentials'
         AWS_REGION = 'il-central-1'
         DOCKER_IMAGE = 'yossiruvinovdocker/ecommerce-project'
@@ -80,10 +81,15 @@ pipeline {
         }
     }
     post {
-        always {
-            //Add channel name
-            slackSend channel: "${env.SLACK_CHANNEL}",
-            message: "Find Status of Pipeline:- ${currentBuild.currentResult} ${env.JOB_NAME} ${env.BUILD_NUMBER} ${BUILD_URL}"
+            success {
+                slackSend(channel: SLACK_CHANNEL, color: 'good', message: "Build ${env.BUILD_NUMBER} Success: ${env.BUILD_URL}")
+                echo 'Deployment successful!'
+            }
+            failure {
+            script {
+                def msg = "Build failed at stage: ${currentBuild.currentResult}"
+                slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}")
+                }
+            }
         }
     }
-}
