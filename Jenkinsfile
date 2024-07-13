@@ -87,27 +87,19 @@ pipeline {
     post {
         always {
             script {
-                try {
-                    if (currentBuild.result == 'SUCCESS') {
-                        slackSend (
-                            baseUrl: "${env.SLACK_BASE_URL}",
-                            color: 'good', 
-                            channel: "${SLACK_CHANNEL}",
-                            tokenCredentialId: "${SLACK_CREDENTIALS}",
-                            message: "Build and Deployment Successful! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-                        )
-                    } else {
-                        slackSend (
-                            baseUrl: "${env.SLACK_BASE_URL}",
-                            color: 'danger', 
-                            channel: "${SLACK_CHANNEL}", 
-                            tokenCredentialId: "${SLACK_CREDENTIALS}", 
-                            message: "Build or Deployment Failed! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
-                        )
-                    }
-                } catch (Exception e) {
-                    echo "Failed to send Slack notification: ${e.getMessage()}"
-                }
+                def message = currentBuild.result == 'SUCCESS' ? 
+                    "Build and Deployment Successful! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})" :
+                    "Build or Deployment Failed! Build '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})"
+
+                slackSend (
+                    baseUrl: "${env.SLACK_BASE_URL}",
+                    color: currentBuild.result == 'SUCCESS' ? 'good' : 'danger', 
+                    channel: "${env.SLACK_CHANNEL}",
+                    tokenCredentialId: "${env.SLACK_CREDENTIALS}",
+                    message: message,
+                    iconEmoji: "${env.SLACK_ICON_EMOJI}",
+                    username: "${env.SLACK_USERNAME}"
+                )
             }
             cleanWs()
         }
