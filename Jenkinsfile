@@ -79,13 +79,9 @@ pipeline {
             steps {
                 script {
                     def containerName = "ecommerce_project_container"
-                    try {
-                        sh "docker exec ${containerName} pytest test/api/test_products.py"
-                        sh "docker exec ${containerName} pytest test/api/test_user.py"
-                    } catch (Exception e) {
-                        echo 'Tests failed but proceeding to post actions.'
-                    }
-                }
+                    sh "docker exec ${containerName} pytest test/api/test_products.py || error('Unit tests failed')"
+                    sh "docker exec ${containerName} pytest test/api/test_user.py || error('Unit tests failed')"
+                } 
             }
         }
     }
