@@ -12,7 +12,7 @@ pipeline {
         AWS_REGION = 'il-central-1'
         DOCKER_IMAGE = 'yossiruvinovdocker/ecommerce-project'
         DOCKER_TAG = 'latest'
-        CONTAINER_NAME = 'ecommerce_project_container'
+        CONTAINER_NAME = 'devops_project_container'
     }
 
     stages {
