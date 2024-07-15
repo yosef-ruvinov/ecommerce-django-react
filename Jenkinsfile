@@ -82,11 +82,21 @@ pipeline {
     }
     post {
         success {
-            slackSend(channel: SLACK_CHANNEL, color: 'good', message: "Build ${env.BUILD_NUMBER} Success: ${env.BUILD_URL}")
+            script {
+                echo "SLACK_CHANNEL: ${SLACK_CHANNEL}"
+                echo "SLACK_WEBHOOK: ${SLACK_WEBHOOK}"
+                slackSend(channel: SLACK_CHANNEL, color: 'good', message: "Build ${env.BUILD_NUMBER} Success: ${env.BUILD_URL}", tokenCredentialId: SLACK_WEBHOOK)
+            }
             echo 'Deployment successful!'
         }
         failure {
-            slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}")
-        }
+            script {
+                def msg = "Build failed at stage: ${currentBuild.currentResult}"
+                echo "SLACK_CHANNEL: ${SLACK_CHANNEL}"
+                echo "SLACK_WEBHOOK: ${SLACK_WEBHOOK}"
+                slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}", tokenCredentialId: SLACK_WEBHOOK)
+            }
+            echo 'Deployment failed!'
+        }     
     }
 }
