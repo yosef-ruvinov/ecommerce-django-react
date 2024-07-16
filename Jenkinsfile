@@ -71,6 +71,18 @@ pipeline {
             }
         }
 
+        stage('Run Migrations and Create Superuser') {
+            steps {
+                script {
+                    sh """
+                    docker exec ${CONTAINER_NAME} python manage.py migrate
+                    docker exec ${CONTAINER_NAME} python manage.py createsuperuser --noinput --username testuser --email test@example.com || true
+                    docker exec ${CONTAINER_NAME} python manage.py shell -c "from django.contrib.auth.models import User; User.objects.filter(username='testuser').update(password='pbkdf2_sha256$216000$9LwzWsdn1w5o$NXm9wY6b3qCaeG/KXJ6TDNaxPhM6ekD2OwE7cimx9Gg=')"  # Password: testpassword
+                    """
+                }
+            }
+        }
+
         stage('Test') {
             steps {
                 script {
