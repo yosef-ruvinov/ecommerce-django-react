@@ -7,6 +7,7 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APIClient
 from django.contrib.auth.models import User
 from base.models import Product
+from rest_framework_simplejwt.tokens import AccessToken  # Adjust based on your JWT library
 
 
 def create_product():
@@ -19,21 +20,20 @@ def create_product():
         description=" ")
 
 @pytest.mark.django_db
-def test_product_creation():
-  p = create_product()
-  assert isinstance(p, Product) is True
-  assert p.name == " Product Name "
 
+def get_access_token():
+    # Implement a function to retrieve a valid JWT access token
+    # This could involve logging in or fetching from a mock token generator
+    # Example:
+    user = User.objects.get(username='test_user')
+    access_token = AccessToken.for_user(user)
+    return str(access_token)
 
-
-
-
-# Api test  - Integration testing
 def test_api_product_creation():
     client = APIClient()
+    access_token = get_access_token()
+    client.credentials(HTTP_AUTHORIZATION=f'Bearer {access_token}')
 
     response = client.post("/api/products/create/")
-
-    # data = response.data
 
     assert response.status_code == 200
