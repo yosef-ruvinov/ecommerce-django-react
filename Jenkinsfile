@@ -74,8 +74,13 @@ pipeline {
         stage('Test') {
             steps {
                 script {
-                    sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_products.py || true"
-                    sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_user.py || true"
+                    try {
+                        sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_products.py"
+                        sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_user.py"
+                    } catch (Exception e) {
+                        currentBuild.result = 'FAILURE'
+                        throw e
+                    }
                 }
             }
         }
@@ -84,17 +89,12 @@ pipeline {
     post {
         success {
             script {
-                echo "SLACK_CHANNEL: ${SLACK_CHANNEL}"
-                echo "SLACK_WEBHOOK: ${SLACK_WEBHOOK}"
                 slackSend(channel: SLACK_CHANNEL, color: 'good', message: "Build ${env.BUILD_NUMBER} Success: ${env.BUILD_URL}", tokenCredentialId: SLACK_WEBHOOK)
             }
             echo 'Deployment successful!'
         }
         failure {
             script {
-                def msg = "Build failed at stage: ${currentBuild.currentResult}"
-                echo "SLACK_CHANNEL: ${SLACK_CHANNEL}"
-                echo "SLACK_WEBHOOK: ${SLACK_WEBHOOK}"
                 slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}", tokenCredentialId: SLACK_WEBHOOK)
             }
             echo 'Deployment failed!'
