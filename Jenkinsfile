@@ -84,8 +84,8 @@ pipeline {
         success {
             script {
                 echo "SLACK_CHANNEL: ${SLACK_CHANNEL}"
-                echo "SLACK_CREDENTIAL: ${SLACK_CREDENTIAL}"
-                slackSend(channel: SLACK_CHANNEL, color: 'good', message: "Build ${env.BUILD_NUMBER} Success: ${env.BUILD_URL}", tokenCredentialId: SLACK_CREDENTIAL)
+                echo "SLACK_CREDENTIALS: ${SLACK_CREDENTIALS}"
+                slackSend(channel: SLACK_CHANNEL, color: 'good', message: "Build ${env.BUILD_NUMBER} Success: ${env.BUILD_URL}", tokenCredentialId: SLACK_CREDENTIALS)
             }
             echo 'Deployment successful!'
         }
@@ -93,8 +93,8 @@ pipeline {
             script {
                 def msg = "Build failed at stage: ${currentBuild.currentResult}"
                 echo "SLACK_CHANNEL: ${SLACK_CHANNEL}"
-                echo "SLACK_CREDENTIAL: ${SLACK_CREDENTIAL}"
-                slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}", tokenCredentialId: SLACK_CREDENTIAL)
+                echo "SLACK_CREDENTIALS: ${SLACK_CREDENTIALS}"
+                slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}", tokenCredentialId: SLACK_CREDENTIALS)
             }
             echo 'Deployment failed!'
         }     
