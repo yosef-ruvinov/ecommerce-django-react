@@ -75,6 +75,7 @@ pipeline {
             steps {
                 sh 'python manage.py migrate'
                 sh 'pytest --ds=myproject.settings.test'
+                sh 'python manage.py runserver'
             }
         }
 
