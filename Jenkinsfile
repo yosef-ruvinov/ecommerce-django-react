@@ -73,7 +73,7 @@ pipeline {
 
         stage('Database Migration') {
             steps {
-                sh 'python manage.py migrate'
+                sh '/usr/bin/python3 manage.py migrate'
                 sh 'pytest --ds=myproject.settings.test'
                 sh 'python manage.py runserver'
             }
