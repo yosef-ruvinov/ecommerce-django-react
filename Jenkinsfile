@@ -1,14 +1,14 @@
 pipeline {
-    agent {
-        label 'my_ubuntu'
+    agent { 
+        label 'my_ubuntu' 
     }
-
+    
     environment {
-        DOCKER_HUB_CREDENTIALS = credentials('dockerhub_credentials')
+        DOCKER_HUB_CREDENTIALS = 'dockerhub_credentials'
         GIT_REPO = 'https://github.com/yosef-ruvinov/ecommerce-django-react.git'
         SLACK_CHANNEL = '#deployment-notifications'
-        SLACK_TOKEN = credentials('jenkins_ci_token')
-        AWS_CREDENTIALS = credentials('aws_credentials')
+        SLACK_TOKEN = 'jenkins_ci_token'
+        AWS_CREDENTIALS = 'aws_credentials'
         AWS_REGION = 'il-central-1'
         DOCKER_IMAGE = 'yossiruvinovdocker/ecommerce-project'
         DOCKER_TAG = 'latest'
@@ -18,15 +18,15 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: GIT_REPO, branch: 'main'
+                git url: "${GIT_REPO}", branch: 'main'
             }
         }
 
         stage('Kill Existing Container') {
             steps {
                 script {
-                    sh "docker stop ${CONTAINER_NAME} || true"
-                    sh "docker rm ${CONTAINER_NAME} || true"
+                    sh 'docker stop ${CONTAINER_NAME} || true'
+                    sh 'docker rm ${CONTAINER_NAME} || true'
                 }
             }
         }
@@ -34,7 +34,7 @@ pipeline {
         stage('Remove Existing Image') {
             steps {
                 script {
-                    sh "docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} || true"
+                    sh 'docker rmi ${DOCKER_IMAGE}:${DOCKER_TAG} || true'
                 }
             }
         }
@@ -42,7 +42,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -f Dockerfile ."
+                    sh 'docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} -f Dockerfile .'
                 }
             }
         }
@@ -50,15 +50,15 @@ pipeline {
         stage('Push Docker Image to Docker Hub') {
             steps {
                 script {
-                    docker.withRegistry('https://index.docker.io/v1/', DOCKER_HUB_CREDENTIALS) {
-                        sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
+                    docker.withRegistry('https://index.docker.io/v1/', "${DOCKER_HUB_CREDENTIALS}") {
+                        sh 'docker push ${DOCKER_IMAGE}:${DOCKER_TAG}'
                     }
                 }
             }
         }
 
         stage('Deploy Docker Container') {
-            steps {
+            steps { 
                 script {
                     sh """
                     if [ \$(docker ps -a -q -f name=${CONTAINER_NAME}) ]; then
@@ -106,6 +106,6 @@ pipeline {
                 slackSend(channel: SLACK_CHANNEL, color: 'danger', message: "Build ${env.BUILD_NUMBER} Failed: ${env.BUILD_URL}", tokenCredentialId: SLACK_TOKEN)
             }
             echo 'Deployment failed!'
-        }
+        }     
     }
 }
