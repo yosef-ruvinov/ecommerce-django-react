@@ -81,6 +81,7 @@ resource "aws_instance" "jenkins" {
                 sudo apt-get install -y jenkins
                 sudo apt-get install -y docker.io
                 docker buildx install  
+                sudo apt-get install -y python3
                 sudo systemctl start docker
                 sudo systemctl enable docker
                 sudo systemctl start jenkins
