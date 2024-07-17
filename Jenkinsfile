@@ -39,6 +39,15 @@ pipeline {
             }
         }
 
+        stage('Reset Database') {
+            steps {
+                script {
+                    sh 'docker-compose down -v'  
+                    sh 'docker-compose up -d'   
+                }
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
@@ -74,10 +83,11 @@ pipeline {
         stage('Database Migration') {
             steps {
                 script {
-                    sh 'docker exec ${CONTAINER_NAME} python manage.py migrate'
+                    sh 'docker exec ${CONTAINER_NAME} python manage.py migrate --noinput'
                 }
             }
         }
+
 
         stage('Test') {
             steps {
