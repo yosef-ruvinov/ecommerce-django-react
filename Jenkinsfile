@@ -75,6 +75,8 @@ pipeline {
             steps {
                 script {
                     try {
+                        sh 'python manage.py migrate'
+                        sh 'pytest --ds=myproject.settings.test'
                         sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_products.py"
                         sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_user.py"
                     } catch (Exception e) {
