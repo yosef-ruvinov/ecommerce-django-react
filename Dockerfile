@@ -6,6 +6,7 @@ COPY requirements.txt requirements.txt
 RUN pip install --upgrade pip
 RUN apk add --update --no-cache gcc musl-dev libffi-dev openssl-dev
 RUN pip install --upgrade defusedxml olefile Pillow
+RUN pip3 install djangorestframework
 RUN pip install -r requirements.txt
 COPY . .
 EXPOSE 8000
