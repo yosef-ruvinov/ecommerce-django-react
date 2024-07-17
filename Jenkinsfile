@@ -75,11 +75,20 @@ pipeline {
             steps {
                 script {
                     try {
+                        // Ensure Docker container is running
+                        sh "docker start ${CONTAINER_NAME}"
+                        
+                        // Run pytest commands within Docker container
+                        sh "docker exec ${CONTAINER_NAME} python manage.py test"
                         sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_products.py"
                         sh "docker exec ${CONTAINER_NAME} pytest tests/api/test_user.py"
+                        
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
                         throw e
+                    } finally {
+                        // Stop Docker container after tests
+                        sh "docker stop ${CONTAINER_NAME}"
                     }
                 }
             }
