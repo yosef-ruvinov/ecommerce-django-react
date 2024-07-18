@@ -163,3 +163,5 @@ resource "aws_instance" "my_windows" {
               Start-Sleep -s 30
               EOF
 }
+
+# test 
